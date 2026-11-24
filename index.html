@@ -151,6 +151,42 @@
     .footer-brand img { width: 31px; height: 31px; }
     .disclaimer { margin: 23px 0 0; color: #778985; font-size: .78rem; }
     .mobile-download { display: none; }
+    .chat-launcher {
+      position: fixed; right: 24px; bottom: 24px; z-index: 35;
+      width: 60px; height: 60px; display: grid; place-items: center;
+      border: 0; border-radius: 21px; color: #fff; background: var(--green);
+      box-shadow: 0 14px 35px rgba(9, 111, 99, .32); cursor: pointer;
+      font-size: 1.55rem; transition: transform .18s ease, background .18s ease;
+    }
+    .chat-launcher:hover { transform: translateY(-3px); background: var(--green-dark); }
+    .chat-window {
+      position: fixed; right: 24px; bottom: 98px; z-index: 35;
+      width: min(390px, calc(100vw - 32px)); height: min(590px, calc(100dvh - 130px));
+      min-height: 430px; display: flex; flex-direction: column; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 23px; background: #fff;
+      box-shadow: 0 24px 80px rgba(20, 62, 59, .24);
+    }
+    .chat-window[hidden] { display: none; }
+    .chat-head { display: flex; align-items: center; gap: 12px; padding: 16px; color: #fff; background: var(--ink); }
+    .chat-avatar { flex: 0 0 42px; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 15px; color: var(--ink); background: var(--orange); font-size: 1.25rem; }
+    .chat-head-copy { flex: 1; min-width: 0; }
+    .chat-head-copy strong { display: block; font-size: .98rem; }
+    .chat-head-copy span { display: block; color: #c4d8d1; font-size: .75rem; }
+    .chat-close { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,.24); border-radius: 12px; color: white; background: transparent; cursor: pointer; font-size: 1.2rem; }
+    .chat-log { flex: 1; min-height: 0; overflow-y: auto; padding: 15px 13px 10px; background: #f7faf8; }
+    .chat-message { display: flex; margin: 0 0 11px; }
+    .chat-message.user { justify-content: flex-end; }
+    .chat-bubble { max-width: 88%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 16px 16px 16px 5px; background: #fff; color: var(--ink); font-size: .88rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .chat-message.user .chat-bubble { border-color: var(--green); border-radius: 16px 16px 5px 16px; background: var(--green); color: #fff; }
+    .chat-bubble a { display: inline-flex; margin-top: 8px; color: var(--green-dark); font-weight: 800; text-underline-offset: 3px; }
+    .chat-chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 12px 8px; background: #fff; }
+    .chat-chip { max-width: 100%; padding: 7px 10px; border: 1px solid #cfe7dc; border-radius: 999px; color: var(--green-dark); background: #f2faf6; cursor: pointer; font-size: .74rem; font-weight: 750; text-align: left; }
+    .chat-chip:hover { background: var(--mint); }
+    .chat-compose { display: flex; align-items: end; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--line); background: #fff; }
+    .chat-compose textarea { flex: 1; min-width: 0; min-height: 42px; max-height: 105px; resize: none; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; outline: none; color: var(--ink); background: #f9fbfa; font: inherit; font-size: .84rem; }
+    .chat-compose textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(12,139,123,.12); }
+    .chat-send { flex: 0 0 42px; width: 42px; height: 42px; border: 0; border-radius: 14px; color: white; background: var(--green); cursor: pointer; font-size: 1.1rem; }
+    .chat-privacy { padding: 0 12px 10px; color: #82928d; background: white; font-size: .68rem; }
     @media (max-width: 900px) {
       .links { gap: 14px; }
       .links a { font-size: .82rem; }
@@ -190,6 +226,8 @@
       .footer-row { align-items: flex-start; flex-direction: column; }
       .mobile-download { display: block; position: fixed; z-index: 18; left: 12px; right: 12px; bottom: 12px; }
       .mobile-download .btn { width: 100%; min-height: 50px; }
+      .chat-launcher { right: 16px; bottom: 80px; width: 54px; height: 54px; border-radius: 18px; }
+      .chat-window { right: 10px; bottom: 144px; width: min(390px, calc(100vw - 20px)); height: min(590px, calc(100dvh - 175px)); min-height: 380px; }
       footer { padding-bottom: 90px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
@@ -386,6 +424,21 @@
     </div>
   </footer>
   <div class="mobile-download"><a class="btn" href="MediCare-latest.apk" download>↓ <span data-i18n="downloadButton">APK डाउनलोड करें</span></a></div>
+  <section class="chat-window" id="help-chat" aria-label="MediCare help chatbot" hidden>
+    <header class="chat-head">
+      <div class="chat-avatar" aria-hidden="true">✦</div>
+      <div class="chat-head-copy"><strong data-i18n="chatTitle">MediCare सहायक</strong><span data-i18n="chatSubtitle">ऐप और वेबसाइट की मदद • अभी ऑनलाइन</span></div>
+      <button class="chat-close" id="chat-close" type="button" aria-label="Close chatbot">×</button>
+    </header>
+    <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-relevant="additions"></div>
+    <div class="chat-chips" id="chat-chips" aria-label="Suggested questions"></div>
+    <form class="chat-compose" id="chat-form">
+      <textarea id="chat-input" rows="1" maxlength="500" data-i18n-placeholder="chatPlaceholder" placeholder="अपना सवाल लिखें…" aria-label="Ask MediCare a question"></textarea>
+      <button class="chat-send" id="chat-send-label" type="submit" aria-label="Send message">➤</button>
+    </form>
+    <div class="chat-privacy" data-i18n="chatPrivacy">यह FAQ सहायक है, AI या डॉक्टर नहीं। आपका सवाल इस पेज से बाहर नहीं भेजा जाता।</div>
+  </section>
+  <button class="chat-launcher" id="chat-toggle" type="button" aria-controls="help-chat" aria-expanded="false" aria-label="Chat with MediCare assistant">✦</button>
 
   <script>
     const english = {
@@ -431,7 +484,25 @@
       downloadKicker:"Get started today", downloadTitle:"Get MediCare on your Android phone.", downloadCopy:"Download the current APK using the button. After installation, remember to allow notification and alarm permissions.",
       downloadMeta:"Android APK • Approximately 60 MB • Build: 24 Nov 2026", downloadButton:"Download APK",
       disclaimer:"MediCare is a medication reminder and care-organization app; it is not a substitute for a doctor, pharmacist, medical diagnosis or emergency service. Follow your healthcare professional's advice for medicines and treatment. Reminder delivery depends on phone settings, permissions and connectivity.",
-      footerLine:"Helping you organize your health routine.", backTop:"Back to top ↑", footerNote:"The APK and information on this website are for using the MediCare app. Download APKs only from trusted sources."
+      footerLine:"Helping you organize your health routine.", backTop:"Back to top ↑", footerNote:"The APK and information on this website are for using the MediCare app. Download APKs only from trusted sources.",
+      chatTitle:"MediCare helper", chatSubtitle:"App and website guide • FAQ assistant", chatPlaceholder:"Type your question…", chatPrivacy:"This is an FAQ helper, not AI or a doctor. Your message stays on this page.",
+      chatWelcome:"Hi! Ask me about MediCare features, reminders, Family Circle, referrals, APK installation, privacy, or how to contact the developer. I can answer product questions; I can't give medical advice.",
+      chatPromptDoctor:"How can doctors join or contribute?", chatPromptDeveloper:"How do I contact the developer?", chatPromptReferral:"How do referral gifts work?", chatPromptInstall:"How do I install the APK?",
+      chatSendLabel:"Send message", chatCloseLabel:"Close chatbot", chatOpenLabel:"Chat with MediCare assistant",
+      botDoctor:"There is currently no doctor signup, profile listing, contribution dashboard, or in-app process to add a doctor. A doctor who wants to propose educational content or a product contribution can open a GitHub issue. Please do not include patient-identifiable or confidential health information. Any clinical content would need review; MediCare is not a consultation service.",
+      botContact:"There is no public developer email or phone number listed on this site. You can contact the developer or report a bug through the repository's GitHub Issues page.",
+      botReferral:"Share your referral code with someone creating an account. If the referral is recorded, a gift card may be assigned to the referrer (the code owner) when stock is available and the assignment succeeds. Rewards are not guaranteed. Never share a gift-card PIN publicly.",
+      botInstall:"Download the APK from this page on an Android phone, open the downloaded file, and follow Android's installation prompts. Allow install-from-this-source only for the browser or file manager you used. Then open MediCare and grant notification and alarm permissions. This APK does not install on iPhone.",
+      botReminders:"Add a medicine in the app, set its time and repeat days, then allow notification and exact-alarm permissions. If an alert is missing, review battery/background restrictions, Do Not Disturb, and the saved schedule. Delivery depends on Android and device settings.",
+      botFamily:"Open Family Circle in the app to create a circle or join using an invite code. The admin reviews join requests. Dose status/time and medicine-name sharing have separate preferences; review them before sharing.",
+      botPin:"If you forget the local app PIN, choose “Forgot PIN?” on the MediCare lock screen and confirm. This clears the app PIN on this device and signs you out; you'll need your account sign-in to continue. It does not reset your account password.",
+      botClinical:"MediCare is for reminders and tracking, not diagnosis or treatment advice. Ask your doctor or pharmacist about medicine choice, dosage, symptoms, or changing treatment. For an emergency, contact local emergency services.",
+      botLanguage:"You can choose English, हिन्दी, or Hinglish in the app's language selection or Profile language setting. This website also has an EN/हि button in the top navigation.",
+      botPrivacy:"Use Profile → Privacy & security for the app lock and profile controls. In Family Circle, review the separate sharing options for dose updates and medicine names. Avoid sharing passwords, PINs, gift-card details, or private health information.",
+      botAccount:"MediCare supports account sign-in using the options shown in the app, including email/password and Google sign-in where available. Use the same account to access its synced account features. Keep your password private.",
+      botCost:"This page provides the Android APK download without a purchase flow. Mobile data charges may apply. Referral gift cards depend on eligibility, stock and successful assignment; they are not guaranteed.",
+      botGeneral:"I can help with MediCare app and website questions—features, reminders, installation, Family Circle, referrals, privacy, language, or developer contact. I can't provide medical advice. If your question is about something else or I misunderstood, send it to the developer through GitHub Issues.",
+      botIssueLink:"Open GitHub Issues", botNoPatientData:"Please don't include patient-identifiable or confidential health information."
     };
     const hindi = {
       navFeatures:"सुविधाएँ", navHow:"कैसे इस्तेमाल करें", navFamily:"Family Circle", navFaq:"सवाल-जवाब", navDownload:"APK डाउनलोड",
@@ -476,7 +547,25 @@
       downloadKicker:"आज से शुरू करें", downloadTitle:"MediCare अपने Android फोन पर लें।", downloadCopy:"नीचे दिए बटन से current APK डाउनलोड करें। Install करने के बाद notification और alarm permissions चालू करना न भूलें।",
       downloadMeta:"Android APK • फ़ाइल का आकार लगभग 60 MB • Build: 24 Nov 2026", downloadButton:"APK डाउनलोड करें",
       disclaimer:"MediCare एक medication reminder और care-organization app है; यह डॉक्टर, pharmacist, medical diagnosis या emergency service का विकल्प नहीं है। दवा की खुराक और उपचार के लिए अपने healthcare professional की सलाह मानें। Reminder delivery फोन की settings, permissions और connectivity पर निर्भर करती है।",
-      footerLine:"आपकी सेहत की दिनचर्या को व्यवस्थित रखने में मदद।", backTop:"ऊपर जाएँ ↑", footerNote:"इस वेबसाइट पर दिया गया APK और जानकारी MediCare ऐप के उपयोग के लिए है। APK को केवल भरोसेमंद स्रोत से डाउनलोड करें।"
+      footerLine:"आपकी सेहत की दिनचर्या को व्यवस्थित रखने में मदद।", backTop:"ऊपर जाएँ ↑", footerNote:"इस वेबसाइट पर दिया गया APK और जानकारी MediCare ऐप के उपयोग के लिए है। APK को केवल भरोसेमंद स्रोत से डाउनलोड करें।",
+      chatTitle:"MediCare सहायक", chatSubtitle:"ऐप और वेबसाइट की मदद • FAQ सहायक", chatPlaceholder:"अपना सवाल लिखें…", chatPrivacy:"यह FAQ सहायक है, AI या डॉक्टर नहीं। आपका सवाल इस पेज से बाहर नहीं भेजा जाता।",
+      chatWelcome:"नमस्ते! MediCare की सुविधाओं, रिमाइंडर, Family Circle, referrals, APK install, privacy या developer से संपर्क के बारे में पूछें। मैं ऐप से जुड़े सवालों में मदद कर सकता हूँ, चिकित्सा सलाह नहीं दे सकता।",
+      chatPromptDoctor:"डॉक्टर कैसे जुड़ें या योगदान दें?", chatPromptDeveloper:"डेवलपर से कैसे संपर्क करें?", chatPromptReferral:"Referral gift कैसे मिलता है?", chatPromptInstall:"APK कैसे install करें?",
+      chatSendLabel:"संदेश भेजें", chatCloseLabel:"चैटबॉट बंद करें", chatOpenLabel:"MediCare सहायक से चैट करें",
+      botDoctor:"अभी ऐप में डॉक्टरों के लिए signup, profile listing, contribution dashboard या डॉक्टर को add करने की सुविधा नहीं है। शैक्षिक सामग्री या product contribution का प्रस्ताव देने के लिए GitHub Issues पर लिखें। मरीज की पहचान बताने वाली या गोपनीय स्वास्थ्य जानकारी न भेजें। Clinical सामग्री की समीक्षा ज़रूरी होगी; MediCare consultation सेवा नहीं है।",
+      botContact:"इस वेबसाइट पर developer का public email या phone number नहीं दिया गया है। Developer से संपर्क करने या bug बताने के लिए repository का GitHub Issues पेज इस्तेमाल करें।",
+      botReferral:"अपना referral code नया account बनाने वाले व्यक्ति के साथ साझा करें। Referral दर्ज होने पर, stock उपलब्ध हो और assignment सफल हो तो gift card referrer यानी code के owner को मिल सकता है। Gift की गारंटी नहीं है। Gift-card PIN सार्वजनिक रूप से साझा न करें।",
+      botInstall:"Android फोन पर इस page से APK डाउनलोड करें, डाउनलोड की गई file खोलें और Android के install निर्देश follow करें। Install की अनुमति केवल उस browser या file manager को दें जिससे file खोली है। फिर MediCare खोलकर notification और alarm permissions दें। यह APK iPhone पर install नहीं होता।",
+      botReminders:"App में medicine जोड़ें, समय और repeat होने वाले दिन चुनें, फिर notification और exact-alarm permissions दें। Alert न आए तो battery/background restrictions, Do Not Disturb और saved schedule जांचें। Alert का आना Android और device settings पर निर्भर है।",
+      botFamily:"App में Family Circle खोलकर circle बनाएं या invite code से जुड़ें। Admin join requests देखता है। Dose status/time और medicine names share करने की settings अलग हैं—share करने से पहले उन्हें जांचें।",
+      botPin:"Local app PIN भूलने पर MediCare lock screen पर “Forgot PIN?” चुनकर confirm करें। इससे इस device का app PIN हटेगा और आप sign out होंगे; आगे account से sign in करना होगा। इससे account password reset नहीं होता।",
+      botClinical:"MediCare reminders और tracking के लिए है, diagnosis या इलाज की सलाह के लिए नहीं। दवा, dose, लक्षण या इलाज बदलने से पहले doctor या pharmacist से पूछें। Emergency में local emergency services से संपर्क करें।",
+      botLanguage:"App में language selection या Profile की language setting से English, हिन्दी या Hinglish चुनें। इस website की भाषा ऊपर navigation में EN/हि button से बदलें।",
+      botPrivacy:"App lock और profile controls के लिए Profile → Privacy & security देखें। Family Circle में dose updates और medicine names share करने की settings अलग हैं। Password, PIN, gift-card details या निजी health information साझा न करें।",
+      botAccount:"App में दिखाए गए sign-in options इस्तेमाल करें—जैसे email/password और जहाँ उपलब्ध हो Google sign-in। Synced account सुविधाओं के लिए उसी account से sign in करें। Password निजी रखें।",
+      botCost:"इस website से Android APK बिना purchase flow के डाउनलोड किया जा सकता है। Mobile data charges लागू हो सकते हैं। Referral gift eligibility, stock और सफल assignment पर निर्भर हैं; उनकी गारंटी नहीं है।",
+      botGeneral:"मैं MediCare app और website—features, reminders, install, Family Circle, referral, privacy, language या developer contact—से जुड़े सवालों में मदद कर सकता हूँ। Medical advice नहीं दे सकता। अगर सवाल कुछ और है या जवाब सही नहीं लगा, GitHub Issues से developer को लिखें।",
+      botIssueLink:"GitHub Issues खोलें", botNoPatientData:"कृपया मरीज की पहचान बताने वाली या गोपनीय स्वास्थ्य जानकारी न लिखें।"
     };
     let language = "hi";
     function setLanguage(next) {
@@ -487,12 +576,161 @@
         const key = node.dataset.i18n;
         if (copy[key]) node.innerHTML = copy[key];
       });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+        const key = node.dataset.i18nPlaceholder;
+        if (copy[key]) node.placeholder = copy[key];
+      });
+      document.getElementById("chat-input").setAttribute(
+        "aria-label",
+        next === "hi" ? "MediCare से सवाल पूछें" : "Ask MediCare a question",
+      );
+      document.getElementById("chat-send-label")?.setAttribute(
+        "aria-label",
+        copy.chatSendLabel,
+      );
+      document.getElementById("chat-toggle").setAttribute(
+        "aria-label",
+        copy.chatOpenLabel,
+      );
+      document.getElementById("chat-close").setAttribute(
+        "aria-label",
+        copy.chatCloseLabel,
+      );
+      renderChatPrompts(copy);
+      if (chatStarted) {
+        document.getElementById("chat-log").replaceChildren();
+        appendChatMessage("bot", copy.chatWelcome);
+      }
       document.getElementById("language-toggle").textContent = next === "hi" ? "EN" : "हि";
       document.title = next === "hi" ? "MediCare — आपकी सेहत का साथी" : "MediCare — Your Health Companion";
       document.querySelector('meta[name="description"]').content = next === "hi"
         ? "MediCare — दवा के समय, परिवार की देखभाल और रोज़ की सेहत को व्यवस्थित रखने वाला आपका health companion."
         : "MediCare helps you organize medicine reminders, daily schedules and family care on Android.";
     }
+    let chatStarted = false;
+    const supportIssuesUrl = "https://github.com/Satyam0202/katla/issues/new";
+    function renderChatPrompts(copy) {
+      const prompts = [
+        ["chatPromptDoctor", copy.chatPromptDoctor],
+        ["chatPromptDeveloper", copy.chatPromptDeveloper],
+        ["chatPromptReferral", copy.chatPromptReferral],
+        ["chatPromptInstall", copy.chatPromptInstall],
+      ];
+      const container = document.getElementById("chat-chips");
+      container.replaceChildren();
+      prompts.forEach(([key, label]) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chat-chip";
+        chip.textContent = label;
+        chip.addEventListener("click", () => submitChatQuestion(label));
+        container.append(chip);
+      });
+    }
+    function appendChatMessage(role, text, link) {
+      const log = document.getElementById("chat-log");
+      const row = document.createElement("div");
+      row.className = `chat-message ${role}`;
+      const bubble = document.createElement("div");
+      bubble.className = "chat-bubble";
+      bubble.textContent = text;
+      if (link) {
+        const anchor = document.createElement("a");
+        anchor.href = supportIssuesUrl;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        anchor.textContent = (language === "en" ? english : hindi).botIssueLink;
+        bubble.append(document.createElement("br"), anchor);
+      }
+      row.append(bubble);
+      log.append(row);
+      log.scrollTop = log.scrollHeight;
+    }
+    function getChatReply(question) {
+      const text = question.toLocaleLowerCase();
+      const copy = language === "en" ? english : hindi;
+      const has = (pattern) => pattern.test(text);
+      if (has(/(developer|contact|support|feedback|complaint|bug|report|email|phone number|संपर्क|डेवलपर|शिकायत|बग|ईमेल)/u)) {
+        return { text: copy.botContact, link: true };
+      }
+      if (has(/(dose|dosage|medicine advice|medical advice|diagnos|symptom|treatment|emergency|दवा.*(कितनी|खाऊं|खाऊँ)|खुराक|लक्षण|इलाज|आपातकाल)/u)) {
+        return { text: copy.botClinical };
+      }
+      if (has(/(doctor|doctors|physician|clinician|डॉक्टर|चिकित्सक)/u)) {
+        return { text: copy.botDoctor, link: true };
+      }
+      if (has(/(referral|refer|gift|reward|code|रेफरल|रेफ़रल|गिफ्ट|उपहार|कोड)/u)) {
+        return { text: copy.botReferral };
+      }
+      if (has(/(family|circle|invite|परिवार|फैमिली|सर्कल|आमंत्रित)/u)) {
+        return { text: copy.botFamily };
+      }
+      if (has(/(forgot.*pin|pin.*forgot|app lock|app pin|पिन भूल|पिन.*भूल|ऐप लॉक)/u)) {
+        return { text: copy.botPin };
+      }
+      if (has(/(reminder|alarm|notification|medicine|medication|schedule|add.*(medicine|दवा)|दवाई|दवा.*(जोड़|समय)|रिमाइंडर|अलार्म|नोटिफिकेशन|शेड्यूल)/u)) {
+        return { text: copy.botReminders };
+      }
+      if (has(/(install|download|apk|android|iphone|ios|इंस्टॉल|डाउनलोड|एपीके|फोन में)/u)) {
+        return { text: copy.botInstall };
+      }
+      if (has(/(language|hindi|hinglish|english|भाषा|हिंदी|हिन्दी)/u)) {
+        return { text: copy.botLanguage };
+      }
+      if (has(/(privacy|private|share|data|password|security|गोपनीय|प्राइवेसी|शेयर|पासवर्ड|सुरक्षा)/u)) {
+        return { text: copy.botPrivacy };
+      }
+      if (has(/(account|sign.?in|login|register|signup|password|अकाउंट|खाता|लॉग.?इन|साइन.?इन|रजिस्टर)/u)) {
+        return { text: copy.botAccount };
+      }
+      if (has(/(free|cost|price|paid|पैसा|कीमत|मुफ्त|निःशुल्क)/u)) {
+        return { text: copy.botCost };
+      }
+      if (/^(hi|hello|hey|namaste|नमस्ते|हेलो|हाय)[!. ]*$/u.test(text)) {
+        return { text: copy.chatWelcome };
+      }
+      return { text: copy.botGeneral, link: true };
+    }
+    function submitChatQuestion(question) {
+      const cleanQuestion = question.trim();
+      if (!cleanQuestion) return;
+      chatStarted = true;
+      appendChatMessage("user", cleanQuestion);
+      const reply = getChatReply(cleanQuestion);
+      appendChatMessage("bot", reply.text, reply.link);
+    }
+    const chatWindow = document.getElementById("help-chat");
+    const chatToggle = document.getElementById("chat-toggle");
+    const chatInput = document.getElementById("chat-input");
+    chatToggle.addEventListener("click", () => {
+      const isOpening = chatWindow.hidden;
+      chatWindow.hidden = !isOpening;
+      chatToggle.setAttribute("aria-expanded", String(isOpening));
+      if (isOpening) {
+        if (!chatStarted) {
+          chatStarted = true;
+          appendChatMessage("bot", (language === "en" ? english : hindi).chatWelcome);
+        }
+        chatInput.focus();
+      }
+    });
+    document.getElementById("chat-close").addEventListener("click", () => {
+      chatWindow.hidden = true;
+      chatToggle.setAttribute("aria-expanded", "false");
+      chatToggle.focus();
+    });
+    document.getElementById("chat-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      submitChatQuestion(chatInput.value);
+      chatInput.value = "";
+      chatInput.focus();
+    });
+    chatInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        document.getElementById("chat-form").requestSubmit();
+      }
+    });
     document.getElementById("language-toggle").addEventListener("click", () => setLanguage(language === "hi" ? "en" : "hi"));
     document.getElementById("menu-toggle").addEventListener("click", () => document.getElementById("site-nav").classList.toggle("open"));
     document.querySelectorAll("#site-nav a").forEach((link) => link.addEventListener("click", () => document.getElementById("site-nav").classList.remove("open")));
